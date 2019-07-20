@@ -22,7 +22,7 @@ export const routes: Routes = [
     {
         path: 'aboutus',
         component: AboutComponent
-    }
+    },
     {
         path: 'contactus',
         component: ContactComponent
