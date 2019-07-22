@@ -16,6 +16,7 @@ import { Comment } from '../shared/comment';
 export class DishdetailComponent implements OnInit {
 
   dish: Dish;
+  errMess: string;
   dishIds: string[];
   prev: string;
   next: string;
@@ -36,9 +37,11 @@ export class DishdetailComponent implements OnInit {
       'maxlength': 'Author Name cannot be more than 25 characters long.'
     },
     'comment': {
-      'required': 'Comment is required.'
+      'required': 'Comment is required.',
+      'minlength': 'Comment must be at least 2 characters long.',
+      'maxlength': 'Comment cannot be more than 100 characters long.'
     }
-  }
+  };
 
   constructor(private dishService: DishService,
     private route: ActivatedRoute,
@@ -53,10 +56,8 @@ export class DishdetailComponent implements OnInit {
       .subscribe((dishIds) => this.dishIds = dishIds);
     this.route.params
       .pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
-      .subscribe(dish => {
-        this.dish = dish;
-        this.setPrevNext(dish.id);
-      });
+      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); },
+        errmess => this.errMess = <any>errmess);
   }
 
   setPrevNext(dishId: string) {
@@ -72,7 +73,7 @@ export class DishdetailComponent implements OnInit {
   createForm() {
     this.commentForm = this.fb.group({
       author: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-      comment: ['', Validators.required],
+      comment: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       rating: 5,
     });
 
