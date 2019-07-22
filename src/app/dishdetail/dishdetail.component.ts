@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -22,7 +22,7 @@ export class DishdetailComponent implements OnInit {
 
   commentForm: FormGroup;
   comment:  Comment;
-  @ViewChild('fform')  commentFormDirective;
+  @ViewChild('cform')  commentFormDirective;
 
   formErrors = {
     'author': '',
@@ -31,25 +31,24 @@ export class DishdetailComponent implements OnInit {
 
   validationMessages = {
     'author': {
-      'required': 'Name is required.',
-      'minlength': 'Name must be at least 2 characters long.',
-      'maxlength': 'Name cannot be more than 25 characters long.'
+      'required': 'Author Name is required.',
+      'minlength': 'Author Name must be at least 2 characters long.',
+      'maxlength': 'Author Name cannot be more than 25 characters long.'
     },
     'comment': {
-      'required': 'Comment is required.',
-      'minlength': 'Comment must be at least 2 characters long.',
-      'maxlength': 'Comment cannot be more than 100 characters long.'
+      'required': 'Comment is required.'
     }
   }
 
   constructor(private dishService: DishService,
     private route: ActivatedRoute,
     private location: Location,
-    private fb: FormBuilder) {
-      this.createForm();
-  }
+    private fb: FormBuilder,
+    @Inject('BaseURL') private BaseURL) { }
 
   ngOnInit() {
+    this.createForm();
+
     this.dishService.getDishIds()
       .subscribe((dishIds) => this.dishIds = dishIds);
     this.route.params
@@ -73,7 +72,7 @@ export class DishdetailComponent implements OnInit {
   createForm() {
     this.commentForm = this.fb.group({
       author: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-      comment: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      comment: ['', Validators.required],
       rating: 5,
     });
 

@@ -13,7 +13,7 @@
           <h3>{{dish.name | uppercase}}</h3>
         </mat-card-title>
       </mat-card-header>
-      <img mat-card-image src={{dish.image}} alt={{dish.name}} />
+      <img mat-card-image src="{{BaseURL + dish.image}}" alt={{dish.name}} />
       <mat-card-content>
         <p>{{dish.description}}</p>
       </mat-card-content>
@@ -24,6 +24,7 @@
         <button mat-button (click)="goBack()">BACK</button>
         <button mat-button>LIKE</button>
         <button mat-button>SHARE</button>
+        <span class="flex-spacer"></span>
         <button mat-button [routerLink]="['/dishdetail', next]">
           <span class="fa fa-chevron-right fa-lg"></span>
         </button>
@@ -35,15 +36,22 @@
     <mat-list>
       <h1>Comments</h1>
       <mat-list-item *ngFor="let comment of dish.comments">
-          <p matLine>{{comment['comment']}}</p>
-          <p matLine>{{comment['rating']}} Stars</p>
-          <p matLine>-- {{comment.author}} {{comment['date'] | date }}</p>
+          <h4 matLine>{{comment.comment}}</h4>
+          <p matLine>{{comment.rating}} Stars</p>
+          <p matLine>-- {{comment.author}} {{comment.date | date }}</p>
+      </mat-list-item>
+    </mat-list>
+    <mat-list *ngIf="commentForm.valid">
+      <mat-list-item>
+          <h4 matLine>{{commentForm.get('comment').value}}</h4>
+          <p matLine>{{commentForm.get('rating').value}} Stars</p>
+          <p matLine>-- {{commentForm.get('author').value}}}}</p>
       </mat-list-item>
     </mat-list>
 
     <div>
       <p>{{commentForm.value | json}} {{commentForm.status | json}}</p>
-      <form novalidate [formGroup]="commentForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+      <form novalidate [formGroup]="commentForm" #cform="ngForm" (ngSubmit)="onSubmit()">
         <p>
           <mat-form-field class="full-width">
             <input matInput formControlName="author" placeholder="Name" type="text">
